@@ -7,18 +7,22 @@ services:
     startCommand: bash start.sh
     autoDeployTrigger: commit
     healthCheckPath: /login
+
     envVars:
       - key: PYTHON_VERSION
         value: 3.13.5
+
       - key: SECRET_KEY
         generateValue: true
+
       - key: DB_PATH
-        value: /var/data/database.db
+        value: database.db
+
       - key: BACKUP_DIR
-        value: /var/data/backups
+        value: backups
+
       - key: DEFAULT_ADMIN_USERNAME
         sync: false
+
       - key: DEFAULT_ADMIN_PASSWORD
         sync: false
-      - key: DB_PATH
-  value: database.db
