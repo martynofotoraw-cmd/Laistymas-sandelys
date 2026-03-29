@@ -20,7 +20,5 @@ services:
         sync: false
       - key: DEFAULT_ADMIN_PASSWORD
         sync: false
-    disk:
-      name: sandelys-data
-      mountPath: /var/data
-      sizeGB: 1
+  - key: DB_PATH
+  value: database.db
