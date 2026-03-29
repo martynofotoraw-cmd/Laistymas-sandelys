@@ -20,5 +20,5 @@ services:
         sync: false
       - key: DEFAULT_ADMIN_PASSWORD
         sync: false
-  - key: DB_PATH
+      - key: DB_PATH
   value: database.db
