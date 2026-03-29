@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Error logai{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Error logai</h1>
+        <p class="muted">Tik adminui</p>
+    </div>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Data</th><th>Username</th><th>Puslapis</th><th>Klaida</th><th>Stack trace</th></tr>
+            </thead>
+            <tbody>
+            {% for l in logs %}
+            <tr>
+                <td>{{ l["created_at"] }}</td>
+                <td>{{ l["username"] or "-" }}</td>
+                <td>{{ l["page"] }}</td>
+                <td>{{ l["error_message"] }}</td>
+                <td><pre class="pre-wrap">{{ l["stack_trace"] }}</pre></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

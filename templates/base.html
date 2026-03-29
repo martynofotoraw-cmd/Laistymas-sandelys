@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="lt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Sandėlio sistema{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+    <meta name="theme-color" content="#1e293b">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">S</div>
+            <div>
+                <div class="brand-title">Sandėlio sistema</div>
+                <div class="brand-subtitle">{{ session.get('username', '') }} ({{ session.get('role', '') }})</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item" href="{{ url_for('dashboard') }}">Prietaisų skydas</a>
+            {% if session.get('role') == 'admin' %}
+            <a class="menu-item" href="{{ url_for('produktai') }}">Produktai</a>
+            {% endif %}
+            <a class="menu-item" href="{{ url_for('inventorius') }}">Inventorius</a>
+            <a class="menu-item" href="{{ url_for('judejimai') }}">Judėjimai</a>
+            <a class="menu-item" href="{{ url_for('korekcijos') }}">Korekcijos</a>
+            <a class="menu-item" href="{{ url_for('truksta') }}">Trūksta</a>
+            <a class="menu-item" href="{{ url_for('scanner') }}">Skenuoti barkodą</a>
+
+            {% if session.get('role') == 'admin' %}
+            <a class="menu-item" href="{{ url_for('vartotojai') }}">Darbuotojai</a>
+            <a class="menu-item" href="{{ url_for('error_logai') }}">Error logai</a>
+            <a class="menu-item" href="{{ url_for('prisijungimu_istorija') }}">Prisijungimų istorija</a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-actions">
+            {% if session.get('role') == 'admin' %}
+            <button id="installBtn" class="secondary hidden">Įdiegti app</button>
+            <a class="menu-item" href="{{ url_for('atsargine_kopija') }}">Atsarginė kopija</a>
+            <a class="menu-item" href="{{ url_for('eksportuoti_produktus') }}">Eksportuoti CSV</a>
+            {% endif %}
+            <a class="menu-item" href="{{ url_for('logout') }}">Atsijungti</a>
+        </div>
+    </aside>
+
+    <main class="content">
+        {% if message %}
+        <div class="alert">{{ message }}</div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

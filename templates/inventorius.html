@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Inventorius{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Inventorius</h1>
+        <p class="muted">Pardavimai, papildymai ir likučiai</p>
+    </div>
+    <form method="get" class="search-form">
+        <input type="text" name="q" placeholder="Ieškoti..." value="{{ paieska }}">
+        <button type="submit">Ieškoti</button>
+    </form>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Pavadinimas</th><th>Barkodas</th><th>Matas</th><th>Pagrindinis</th><th>Išorinis</th><th>Min.</th><th>Veiksmai</th></tr>
+            </thead>
+            <tbody>
+            {% for p in inventorius %}
+            <tr>
+                <td>{{ p["pavadinimas"] }}</td>
+                <td>{{ p["barkodas"] or "-" }}</td>
+                <td>{{ p["matas"] }}</td>
+                <td class="{% if p['pagrindinis'] <= p['min_kiekis'] %}danger{% endif %}">{{ p["pagrindinis"] }}</td>
+                <td>{{ p["isorinis"] }}</td>
+                <td>{{ p["min_kiekis"] }}</td>
+                <td>
+                    <div class="actions-grid">
+                        <form method="post" action="/parduoti" class="mini-form">
+                            <input type="hidden" name="pid" value="{{ p['id'] }}">
+                            <input type="number" step="0.01" min="0.01" name="kiekis" placeholder="Kiekis" required>
+                            <button type="submit">Parduoti</button>
+                        </form>
+                        <form method="post" action="/papildyti" class="mini-form">
+                            <input type="hidden" name="pid" value="{{ p['id'] }}">
+                            <input type="number" step="0.01" min="0.01" name="kiekis" placeholder="Kiekis" required>
+                            <button type="submit">Iš išorinio</button>
+                        </form>
+                        <form method="post" action="/pagrindinis_prideti" class="mini-form">
+                            <input type="hidden" name="pid" value="{{ p['id'] }}">
+                            <input type="number" step="0.01" min="0.01" name="kiekis" placeholder="Kiekis" required>
+                            <button type="submit">Į pagrindinį</button>
+                        </form>
+                        <form method="post" action="/isorinis_prideti" class="mini-form">
+                            <input type="hidden" name="pid" value="{{ p['id'] }}">
+                            <input type="number" step="0.01" min="0.01" name="kiekis" placeholder="Kiekis" required>
+                            <button type="submit">Į išorinį</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

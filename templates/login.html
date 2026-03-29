@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="lt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prisijungimas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-page">
+    <div class="login-card">
+        <h1>Prisijungimas</h1>
+        <p class="muted">Sandėlio sistema</p>
+
+        {% if message %}
+        <div class="alert">{{ message }}</div>
+        {% endif %}
+
+        <form method="post" class="stack-form">
+            <input type="text" name="username" placeholder="Vartotojo vardas" required>
+            <input type="password" name="password" placeholder="Slaptažodis" required>
+            <button type="submit">Prisijungti</button>
+        </form>
+
+
+    </div>
+</body>
+</html>

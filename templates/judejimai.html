@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Judėjimai{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Judėjimai</h1>
+        <p class="muted">Istorija ir atšaukimai</p>
+    </div>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Data</th><th>Produktas</th><th>Tipas</th><th>Iš kur</th><th>Į kur</th><th>Kiekis</th><th>Pastaba</th><th>Atliko</th><th>Būsena</th><th>Veiksmas</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for j in judejimai %}
+            <tr>
+                <td>{{ j["id"] }}</td>
+                <td>{{ j["data"] }}</td>
+                <td>{{ j["pavadinimas"] }}</td>
+                <td>{{ j["tipas"] }}</td>
+                <td>{{ j["is_kur"] or "-" }}</td>
+                <td>{{ j["i_kur"] or "-" }}</td>
+                <td>{{ j["kiekis"] }}</td>
+                <td>{{ j["pastaba"] or "-" }}</td>
+                <td>{{ j["atliko_vartotojas"] or "-" }}</td>
+                <td>{% if j["atsauktas"] == 1 %}<span class="danger">Atšauktas</span>{% else %}Aktyvus{% endif %}</td>
+                <td>
+                    {% if j["atsauktas"] == 0 and j["tipas"] != "ATŠAUKIMAS" %}
+                    <form method="post" action="/atsaukti/{{ j['id'] }}">
+                        <button type="submit" class="danger-btn">Atšaukti</button>
+                    </form>
+                    {% else %}-{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Trūksta{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Trūksta</h1>
+        <p class="muted">Produktai žemiau nustatyto limito</p>
+    </div>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Pavadinimas</th><th>Barkodas</th><th>Matas</th><th>Pagrindinis</th><th>Išorinis</th><th>Minimalus</th></tr>
+            </thead>
+            <tbody>
+            {% for p in produktai %}
+            <tr>
+                <td>{{ p["pavadinimas"] }}</td>
+                <td>{{ p["barkodas"] or "-" }}</td>
+                <td>{{ p["matas"] }}</td>
+                <td class="danger">{{ p["pagrindinis"] }}</td>
+                <td>{{ p["isorinis"] }}</td>
+                <td>{{ p["min_kiekis"] }}</td>
+            </tr>
+            {% endfor %}
+            {% if not produktai %}
+            <tr><td colspan="6">Visų produktų likučiai geri.</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

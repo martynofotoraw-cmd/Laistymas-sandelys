@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Korekcijos{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Korekcijos</h1>
+        <p class="muted">Rankinis likučių taisymas</p>
+    </div>
+    <form method="get" class="search-form">
+        <input type="text" name="q" placeholder="Ieškoti..." value="{{ paieska }}">
+        <button type="submit">Ieškoti</button>
+    </form>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Pavadinimas</th><th>Barkodas</th><th>Pagrindinis</th><th>Išorinis</th><th>Korekcija</th></tr>
+            </thead>
+            <tbody>
+            {% for p in inventorius %}
+            <tr>
+                <td>{{ p["pavadinimas"] }}</td>
+                <td>{{ p["barkodas"] or "-" }}</td>
+                <td>{{ p["pagrindinis"] }}</td>
+                <td>{{ p["isorinis"] }}</td>
+                <td>
+                    <form method="post" action="/koreguoti" class="mini-form-3">
+                        <input type="hidden" name="pid" value="{{ p['id'] }}">
+                        <select name="vieta" required>
+                            <option value="PAGRINDINIS">Pagrindinis</option>
+                            <option value="ISORINIS">Išorinis</option>
+                        </select>
+                        <input type="number" step="0.01" min="0" name="naujas_kiekis" placeholder="Naujas kiekis" required>
+                        <input type="text" name="pastaba" placeholder="Pastaba">
+                        <button type="submit" class="secondary">Koreguoti</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

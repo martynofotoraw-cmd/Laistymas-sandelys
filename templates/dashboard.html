@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Prietaisų skydas{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Prietaisų skydas</h1>
+        <p class="muted">Bendra sandėlio apžvalga</p>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Produktų</div><div class="stat-value">{{ produktu_kiekis }}</div></div>
+    <div class="stat-card"><div class="stat-label">Mažas likutis</div><div class="stat-value danger">{{ mazai_likucio }}</div></div>
+    <div class="stat-card"><div class="stat-label">Pagrindinis</div><div class="stat-value">{{ bendras_pagr }}</div></div>
+    <div class="stat-card"><div class="stat-label">Išorinis</div><div class="stat-value">{{ bendras_isor }}</div></div>
+</div>
+
+<section class="card">
+    <div class="card-header"><h2>Paskutiniai judėjimai</h2></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Data</th><th>Produktas</th><th>Tipas</th><th>Kiekis</th><th>Atliko</th></tr></thead>
+            <tbody>
+            {% for j in judejimai %}
+            <tr>
+                <td>{{ j["data"] }}</td>
+                <td>{{ j["pavadinimas"] }}</td>
+                <td>{{ j["tipas"] }}</td>
+                <td>{{ j["kiekis"] }}</td>
+                <td>{{ j["atliko_vartotojas"] or "-" }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="card">
+    <div class="card-header"><h2>Keisti savo slaptažodį</h2></div>
+    <form method="post" action="{{ url_for('keisti_slaptazodi') }}" class="stack-form">
+        <input type="password" name="senas" placeholder="Senas slaptažodis" required>
+        <input type="password" name="naujas" placeholder="Naujas slaptažodis" required>
+        <button type="submit">Pakeisti slaptažodį</button>
+    </form>
+</section>
+{% endblock %}

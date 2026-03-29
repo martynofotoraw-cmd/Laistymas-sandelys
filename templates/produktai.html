@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Produktai{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Produktai</h1>
+        <p class="muted">Produktų sąrašas, importas ir redagavimas</p>
+    </div>
+    <form method="get" class="search-form">
+        <input type="text" name="q" placeholder="Ieškoti..." value="{{ paieska }}">
+        <button type="submit">Ieškoti</button>
+    </form>
+</div>
+
+<div class="main-grid">
+    <section class="card">
+        <div class="card-header"><h2>Produktų sąrašas</h2></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Pavadinimas</th><th>Barkodas</th><th>Matas</th><th>Min.</th><th>Veiksmai</th></tr>
+                </thead>
+                <tbody>
+                {% for p in produktai %}
+                <tr>
+                    <td>{{ p["pavadinimas"] }}</td>
+                    <td>{{ p["barkodas"] or "-" }}</td>
+                    <td>{{ p["matas"] }}</td>
+                    <td>{{ p["min_kiekis"] }}</td>
+                    <td>
+                        <a class="edit-link" href="/produktai?redaguoti={{ p['id'] }}">Redaguoti</a>
+                        <form method="post" action="/istrinti_produkta/{{ p['id'] }}" onsubmit="return confirm('Ar tikrai nori ištrinti?');" style="margin-top:8px;">
+                            <button type="submit" class="danger-btn">Ištrinti</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-header"><h2>{% if redaguojamas %}Redaguoti{% else %}Naujas produktas{% endif %}</h2></div>
+
+        {% if redaguojamas %}
+        <form method="post" action="/redaguoti_produkta" class="stack-form">
+            <input type="hidden" name="produkto_id" value="{{ redaguojamas['id'] }}">
+            <input type="text" name="pavadinimas" value="{{ redaguojamas['pavadinimas'] }}" required>
+            <input type="text" name="barkodas" value="{{ redaguojamas['barkodas'] or '' }}">
+            <input type="text" name="matas" value="{{ redaguojamas['matas'] }}" required>
+            <input type="number" step="0.01" min="0" name="min_kiekis" value="{{ redaguojamas['min_kiekis'] }}" required>
+            <button type="submit">Išsaugoti</button>
+            <a class="cancel-link" href="/produktai">Atšaukti</a>
+        </form>
+        {% else %}
+        <form method="post" action="/prideti_produkta" class="stack-form">
+            <input type="text" name="pavadinimas" placeholder="Pavadinimas" required>
+            <input type="text" name="barkodas" placeholder="Barkodas">
+            <input type="text" name="matas" placeholder="Matas (vnt, m...)" required>
+            <input type="number" step="0.01" min="0" name="min_kiekis" placeholder="Minimalus kiekis" required>
+            <button type="submit">Pridėti produktą</button>
+        </form>
+        {% endif %}
+
+        <hr style="margin:20px 0;border:none;border-top:1px solid #d9e0ea;">
+
+        <h3>CSV importas</h3>
+        <p class="muted">Stulpeliai: pavadinimas, barkodas, matas, min_kiekis, pagrindinis, isorinis</p>
+        <form method="post" action="/importas" enctype="multipart/form-data" class="stack-form">
+            <input type="file" name="csv_failas" accept=".csv" required>
+            <button type="submit" class="secondary">Importuoti CSV</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

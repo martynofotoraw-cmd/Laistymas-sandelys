@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Darbuotojai{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Darbuotojai</h1>
+        <p class="muted">Tik admin gali kurti ir valdyti paskyras</p>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-header"><h2>Sukurti vartotoją</h2></div>
+    <form method="post" action="/sukurti-vartotoja" class="stack-form">
+        <input type="text" name="username" placeholder="Vartotojo vardas" required>
+        <input type="password" name="password" placeholder="Laikinas slaptažodis" required>
+        <select name="role">
+            <option value="darbuotojas">Darbuotojas</option>
+            <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Sukurti</button>
+    </form>
+</section>
+
+<section class="card">
+    <div class="card-header"><h2>Sistemos būsena</h2></div>
+    {% if system_locked %}
+    <form method="post" action="/atrakinti-sistema">
+        <button type="submit">Atrakinti sistemą</button>
+    </form>
+    {% else %}
+    <form method="post" action="/uzrakinti-sistema">
+        <button type="submit" class="danger-btn">Užrakinti sistemą</button>
+    </form>
+    {% endif %}
+</section>
+
+<section class="card">
+    <div class="card-header"><h2>Esami vartotojai</h2></div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Username</th><th>Rolė</th><th>Aktyvus</th><th>Privalo keisti slaptažodį</th><th>Veiksmai</th></tr>
+            </thead>
+            <tbody>
+            {% for v in vartotojai %}
+            <tr>
+                <td>{{ v["username"] }}</td>
+                <td>{{ v["role"] }}</td>
+                <td>{{ "Taip" if v["active"] == 1 else "Ne" }}</td>
+                <td>{{ "Taip" if v["must_change_password"] == 1 else "Ne" }}</td>
+                <td>
+                    <form method="post" action="/perjungti-vartotoja/{{ v['id'] }}" style="margin-bottom:8px;">
+                        <button type="submit" class="secondary">Aktyvuoti / išjungti</button>
+                    </form>
+                    <form method="post" action="/reset-slaptazodis/{{ v['id'] }}" class="mini-form">
+                        <input type="password" name="new_password" placeholder="Naujas slaptažodis" required>
+                        <button type="submit">Reset</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Scanner{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Barkodo skeneris</h1>
+        <p class="muted">Naudok telefono kamerą</p>
+    </div>
+</div>
+
+<section class="card">
+    <div id="reader" style="width:100%;max-width:500px;"></div>
+    <div id="scan-result" class="alert" style="display:none;margin-top:16px;"></div>
+</section>
+
+<section class="card">
+    <form id="manualBarcodeForm" class="stack-form">
+        <input type="text" id="manualBarcode" placeholder="Įvesk barkodą ranka">
+        <button type="submit">Ieškoti</button>
+    </form>
+</section>
+
+<script src="https://unpkg.com/html5-qrcode" defer></script>
+<script defer>
+document.addEventListener("DOMContentLoaded", function() {
+    const resultBox = document.getElementById("scan-result");
+
+    function showResult(text, ok = true) {
+        resultBox.style.display = "block";
+        resultBox.textContent = text;
+        resultBox.style.background = ok ? "#ecfeff" : "#fdeaea";
+        resultBox.style.border = ok ? "1px solid #a5f3fc" : "1px solid #f5c2c7";
+    }
+
+    async function handleCode(code) {
+        try {
+            const res = await fetch(`/api/produktas-pagal-barkoda/${encodeURIComponent(code)}`);
+            const data = await res.json();
+
+            if (data.found) {
+                showResult(`Rastas produktas: ${data.pavadinimas}.`);
+                setTimeout(() => {
+                    window.location.href = `/inventorius?q=${encodeURIComponent(code)}`;
+                }, 700);
+            } else {
+                showResult(`Barkodas nerastas: ${code}`, false);
+            }
+        } catch {
+            showResult("Klaida ieškant barkodo.", false);
+        }
+    }
+
+    document.getElementById("manualBarcodeForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const val = document.getElementById("manualBarcode").value.trim();
+        if (val) handleCode(val);
+    });
+
+    const wait = setInterval(() => {
+        if (window.Html5QrcodeScanner) {
+            clearInterval(wait);
+            const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }, false);
+            scanner.render(
+                (decodedText) => {
+                    scanner.clear().catch(() => {});
+                    handleCode(decodedText);
+                },
+                () => {}
+            );
+        }
+    }, 300);
+});
+</script>
+{% endblock %}
